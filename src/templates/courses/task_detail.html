@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'index' %}">My courses</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'course_detail' course.id %}">{{ course.title }}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'theme_detail' course.id theme.id %}">{{ theme.title }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ task.title }}</li>
+        </ol>
+    </nav>
+
+    <h3> {{ task.title }} </h3>
+    <p>{{ task.description}} </p>
+
+    {% if is_paginated %}
+        <ul class="nav nav-tabs">
+            {% for lecture in lectures %}
+                <li class="nav-item">
+                    <a class="nav-link {% if lecture_page.number == forloop.counter and not is_test %}active{% endif %}"
+                       href="?lecture={{ forloop.counter }}">{{ lecture.title }}</a>
+                </li>
+
+            {% endfor %}
+            <li class="nav-item">
+                <a class="nav-link {% if is_test %}active{% endif %}"
+                   href="?test=1">Test</a>
+            </li>
+        </ul>
+        {% if task.lecture_set.count > 0 and not is_test %}
+            {% with lecture=lecture_page.0  %}
+                <div class="mt-10">
+                    <div class="container">
+                        <h4>{{ lecture.title }}</h4>
+                        <p>{{ lecture.content|safe }}</p>
+                    </div>
+                </div>
+            {% endwith %}
+
+        {% else %}
+            {% if task.test_set.count > 0 %}
+                <form method="post">
+                    {% csrf_token %}
+                    {% for test in tests %}
+                        <div class="mb-3">
+                            <p>{{ forloop.counter }}. {{ test.content }}</p>
+                            {% for testvar in test.testvar_set.all %}
+                                <div>
+                                    <input type="radio" id="{{ testvar.id }}"
+                                           value="{{ testvar.id }}"
+                                           name="{{ test.id }}">
+                                    <label for="{{ testvar.id }}">{{ testvar.content }}</label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                    <input class="btn btn-primary" type="submit" value="Send">
+                </form>
+            {% endif %}
+        {% endif %}
+    {% endif %}
+
+
+
+
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'index' %}">My courses</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ course.title }}</li>
+        </ol>
+    </nav>
+    <h1>{{ course.title }}</h1>
+    <p>{{ course.description }}</p>
+    {% for theme in course.theme_set.all %}
+        <div class="card" style="width: 40rem; margin-bottom: 2rem;">
+            <div class="card-body">
+                <h5 class="card-title">{{ theme.title }}</h5>
+                <p class="card-text">{{ theme.description }}</p>
+                <a href="{% url 'theme_detail' course.id theme.id %}" class="btn btn-primary">Go to theme</a>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}
