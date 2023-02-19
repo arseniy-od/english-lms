@@ -143,7 +143,8 @@ ADMIN_ORDERING = [
         'Theme',
         'Task',
         'Lecture',
-        'Test',
+        'Quiz',
+        'QuizMultipleChoice',
     ]),
 ]
 

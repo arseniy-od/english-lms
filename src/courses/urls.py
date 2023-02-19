@@ -7,6 +7,4 @@ urlpatterns = [
     path('course/<int:pk>', CourseDetail.as_view(), name='course_detail'),
     path('course/<int:course_id>/theme/<int:pk>', ThemeDetail.as_view(), name='theme_detail'),
     path('course/<int:course_id>/theme/<int:theme_id>/task/<int:task_id>', TaskDetail.as_view(), name='task_detail'),
-    path('test', test, name='test'),
-
 ]

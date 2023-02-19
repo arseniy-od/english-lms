@@ -34,7 +34,15 @@ class Task(models.Model):
         return self.title
 
 
-class Test(models.Model):
+TYPE_CHOICES = (
+    ('MultipleChoice', 'Multiple Choice'),
+    ('ExactMatch', 'Exact Match'),
+    ('Var', 'Variants'),
+)
+
+
+class Quiz(models.Model):
+    type = models.CharField(max_length=100, choices=TYPE_CHOICES, default='Var')
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
     content = models.CharField(max_length=100)
 
@@ -42,8 +50,25 @@ class Test(models.Model):
         return self.content
 
 
-class TestVar(models.Model):
-    test = models.ForeignKey(Test, on_delete=models.CASCADE)
+class QuizMultipleChoice(models.Model):
+    task = models.ForeignKey(Task, on_delete=models.CASCADE)
+    content = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.content
+
+
+class QuizExactMatch(models.Model):
+    task = models.ForeignKey(Task, on_delete=models.CASCADE)
+    content = models.CharField(max_length=100)
+    answer = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.content
+
+
+class QuizVar(models.Model):
+    test = models.ForeignKey(Quiz, on_delete=models.CASCADE)
     content = models.CharField(max_length=100)
     is_correct = models.BooleanField(default=False)
 
@@ -52,6 +77,19 @@ class TestVar(models.Model):
 
     class Meta:
         ordering = ['content']
+
+
+class QuizMultipleChoiceVar(models.Model):
+    quiz = models.ForeignKey(QuizMultipleChoice, on_delete=models.CASCADE)
+    content = models.CharField(max_length=100)
+    is_correct = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.content
+
+    class Meta:
+        ordering = ['content']
+
 
 
 class Lecture(models.Model):

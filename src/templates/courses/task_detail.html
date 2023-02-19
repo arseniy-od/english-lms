@@ -5,8 +5,8 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{% url 'index' %}">My courses</a></li>
-            <li class="breadcrumb-item"><a href="{% url 'course_detail' course.id %}">{{ course.title }}</a></li>
-            <li class="breadcrumb-item"><a href="{% url 'theme_detail' course.id theme.id %}">{{ theme.title }}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'course_detail' task.theme.course.id %}">{{ task.theme.course.title }}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'theme_detail' task.theme.course.id task.theme.id %}">{{ task.theme.title }}</a></li>
             <li class="breadcrumb-item active" aria-current="page">{{ task.title }}</li>
         </ol>
     </nav>
@@ -24,11 +24,12 @@
 
             {% endfor %}
             <li class="nav-item">
-                <a class="nav-link {% if is_test %}active{% endif %}"
-                   href="?test=1">Test</a>
+                <a class="nav-link {% if is_quiz_page %}active{% endif %}"
+                   href="?quiz=1">Test</a>
             </li>
         </ul>
-        {% if task.lecture_set.count > 0 and not is_test %}
+
+        {% if task.lecture_set.count > 0 and not is_quiz_page %}
             {% with lecture=lecture_page.0  %}
                 <div class="mt-10">
                     <div class="container">
@@ -39,29 +40,48 @@
             {% endwith %}
 
         {% else %}
-            {% if task.test_set.count > 0 %}
+            {% if quizes or quizes_multiple_choice %}
                 <form method="post">
                     {% csrf_token %}
-                    {% for test in tests %}
-                        <div class="mb-3">
-                            <p>{{ forloop.counter }}. {{ test.content }}</p>
-                            {% for testvar in test.testvar_set.all %}
-                                <div>
-                                    <input type="radio" id="{{ testvar.id }}"
-                                           value="{{ testvar.id }}"
-                                           name="{{ test.id }}">
-                                    <label for="{{ testvar.id }}">{{ testvar.content }}</label>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    {% endfor %}
-                    <input class="btn btn-primary" type="submit" value="Send">
-                </form>
+
+                    {% if quizes %}
+                        {% for quiz in quizes %}
+                            <div class="mb-3">
+                                <p>{{ forloop.counter }}. {{ quiz.content }}</p>
+                                {% for quizvar in quiz.quizvar_set.all %}
+                                    <div>
+                                        <input type="radio" id="{{ quizvar.id }}"
+                                               value="{{ quizvar.id }}"
+                                               name="{{ quiz.id }}">
+                                        <label for="{{ quizvar.id }}">{{ quizvar.content }}</label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if quizes_multiple_choice%}
+                        {% for quiz in quizes_multiple_choice %}
+                            <div class="mt-3">
+                                <p>{{ forloop.counter }}. {{ quiz.content }}</p>
+                                {% for quizvar in quiz.quizmultiplechoicevar_set.all %}
+                                    <div>
+                                        <input type="checkbox" id="{{ quizvar.id }}"
+                                               value="{{ quizvar.id }}"
+                                               name="{{ quiz.id }}">
+                                        <label for="{{ quizvar.id }}">{{ quizvar.content }}</label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                        {% endfor %}
+
+                    {% endif %}
+                <input class="btn btn-primary mt-3" type="submit" value="Send">
+            </form>
+
             {% endif %}
         {% endif %}
     {% endif %}
-
-
-
 
 {% endblock %}

@@ -6,4 +6,3 @@ django-modeladmin-reorder==0.3.1
 django-non-dark-admin==2.0.2
 Pillow==9.4.0
 sqlparse==0.4.3
-g

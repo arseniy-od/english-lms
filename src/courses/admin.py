@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Course, Theme, Task, Test, TestVar, Lecture
+from .models import *
 from config.settings import ADMIN_ORDERING
 
 
@@ -21,12 +21,21 @@ admin.site.register(Task)
 admin.site.register(Lecture)
 
 
-class TestVarInline(admin.StackedInline):
-    model = TestVar
+class QuizVarInline(admin.StackedInline):
+    model = QuizVar
 
 
-@admin.register(Test)
+class QuizMultipleChoiceVarInline(admin.StackedInline):
+    model = QuizMultipleChoiceVar
+
+
+@admin.register(Quiz)
 class TestInline(admin.ModelAdmin):
-    inlines = [TestVarInline]
+    inlines = [QuizVarInline]
+
+
+@admin.register(QuizMultipleChoice)
+class QuizMultipleChoiceInline(admin.ModelAdmin):
+    inlines = [QuizMultipleChoiceVarInline]
 
 

@@ -1,10 +1,10 @@
 from django import forms
-from .models import Task, Test, TestVar, Lecture
+from .models import Task, Quiz, QuizVar, Lecture
 
 
 # create a form for test
 def create_test_form():
-    tests = Test.objects.all()
+    tests = Quiz.objects.all()
     test_form = []
     for test in tests:
         test_var = test.testvar_set.all()
